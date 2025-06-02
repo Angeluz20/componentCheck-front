@@ -21,6 +21,7 @@ import {
 import { Header } from "../../../Components/Header";
 import { toast } from "react-toastify";
 import { UserPlus, Trash2, Pencil } from "lucide-react";
+import { useDebounce } from "use-debounce";
 
 export default function ManageUsers() {
   const { user } = useAuth();
@@ -28,6 +29,8 @@ export default function ManageUsers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [searchName, setSearchName] = useState("");
+  const [debouncedSearchName] = useDebounce(searchName, 500);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -130,18 +133,38 @@ export default function ManageUsers() {
     }
   };
 
-      const getTranslatedLevel = (level: string) => {
+  const getTranslatedLevel = (level: string) => {
     switch (level?.toLowerCase()) {
-      case 'admin':
-        return 'Administrador';
-      case 'collaborator':
-        return 'Colaborador';
-      case 'candidate':
-        return 'Candidato';
+      case "admin":
+        return "Administrador";
+      case "collaborator":
+        return "Colaborador";
+      case "candidate":
+        return "Candidato";
       default:
-        return level; 
+        return level;
     }
   };
+
+  useEffect(() => {
+    const search = async () => {
+      if (!debouncedSearchName.trim()) {
+        fetchUsers();
+        return;
+      }
+
+      try {
+        const response = await httpClient.get(
+          `/users?name=${debouncedSearchName.toLowerCase()}`
+        );
+        setUsers([response.data]);
+      } catch (err) {
+        setUsers([]);
+      }
+    };
+
+    search();
+  }, [debouncedSearchName]);
 
   return (
     <Container>
@@ -165,6 +188,14 @@ export default function ManageUsers() {
       >
         Criar Novo Usuário
       </CustomButton>
+      <div style={{ textAlign: "center", marginTop: 20 }}>
+        <InputForm
+          placeholder="Buscar por nome"
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+          style={{ width: "300px" }}
+        />
+      </div>
 
       <Table style={{ width: "80%" }}>
         <thead>

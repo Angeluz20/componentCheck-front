@@ -20,6 +20,7 @@ import {
 import { Edit, Edit2, Trash, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { Button } from "../../components/ui/button";
+import { useDebounce } from "use-debounce";
 
 interface ComponentData {
   id: string;
@@ -40,6 +41,8 @@ export default function ComponentManager() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [searchName, setSearchName] = useState("");
+  const [debouncedSearchName] = useDebounce(searchName, 500);
 
   const handlerLogOut = async () => {
     logout();
@@ -114,7 +117,7 @@ export default function ComponentManager() {
 
   const handleDelete = async (id: string) => {
     try {
-      await httpClient.delete(`/components/delete/${id}`);
+      await httpClient.delete(`/components/${id}`);
       fetchComponents();
       toast.success(`Component excluído com sucesso!`);
     } catch (err) {
@@ -137,6 +140,26 @@ export default function ComponentManager() {
     fetchComponents();
   }, []);
 
+  useEffect(() => {
+    const search = async () => {
+      if (!debouncedSearchName.trim()) {
+        fetchComponents();
+        return;
+      }
+
+      try {
+        const response = await httpClient.get(
+          `/components/${debouncedSearchName.toLowerCase()}`
+        );
+        setComponents([response.data]);
+      } catch (err) {
+        setComponents([]);
+      }
+    };
+
+    search();
+  }, [debouncedSearchName]);
+
   return (
     <Container>
       <Header />
@@ -150,6 +173,15 @@ export default function ComponentManager() {
         >
           Novo Componente
         </CustomButton>
+      </div>
+
+      <div style={{ textAlign: "center", marginTop: 20 }}>
+        <InputForm
+          placeholder="Buscar por nome"
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+          style={{ width: "300px" }}
+        />
       </div>
 
       {showModal && (

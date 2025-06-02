@@ -121,7 +121,6 @@ export default function Candidate() {
     setUserAnswers([]);
   };
 
-  console.log(userAnswers);
   return (
     <Container>
       <Header />

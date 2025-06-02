@@ -7,13 +7,17 @@ import {
   TableHeader,
   TableRow,
   TableCell,
+  InputForm,
 } from "./styles";
 import { Header } from "../../../Components/Header";
 import { toast } from "react-toastify";
 import { Trash2, ListCheck } from "lucide-react";
+import { useDebounce } from "use-debounce";
 
 export default function ResultUsers() {
   const [usersResult, setUsersResult] = useState<any[]>([]);
+  const [searchName, setSearchName] = useState("");
+  const [debouncedSearchName] = useDebounce(searchName, 500);
 
   const fetchUsersPerformance = async () => {
     try {
@@ -68,6 +72,26 @@ export default function ResultUsers() {
     }
   };
 
+  useEffect(() => {
+    const search = async () => {
+      if (!debouncedSearchName.trim()) {
+        fetchUsersPerformance();
+        return;
+      }
+
+      try {
+        const response = await httpClient.get(
+          `/users?name=${debouncedSearchName.toLowerCase()}`
+        );
+        setUsersResult([response.data]);
+      } catch (err) {
+        setUsersResult([]);
+      }
+    };
+
+    search();
+  }, [debouncedSearchName]);
+
   return (
     <Container>
       <Header />
@@ -83,6 +107,14 @@ export default function ResultUsers() {
         <ListCheck size={48} color="var(--green-100)" />
         Resultado do quiz
       </Title>
+      <div style={{ textAlign: "center", marginTop: 20 }}>
+        <InputForm
+          placeholder="Buscar por nome"
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+          style={{ width: "300px" }}
+        />
+      </div>
 
       <Table style={{ width: "80%" }}>
         <thead>
@@ -113,12 +145,6 @@ export default function ResultUsers() {
               <TableCell>{formatDate(u?.attemptedAt)}</TableCell>
 
               <TableCell>
-                {/* <Pencil
-                  size={18}
-                  color="#666"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleEditUser(u)}
-                /> */}
                 <Trash2
                   size={18}
                   color="#d00"
@@ -130,47 +156,6 @@ export default function ResultUsers() {
           ))}
         </tbody>
       </Table>
-
-      {/* {isModalOpen && (
-        <ModalOverlay>
-          <ModalContent>
-            <ModalCloseButton onClick={closeModal}>✕</ModalCloseButton>
-            <Subtitle style={{ color: "var(--green-100)" }}>
-              {isEditing ? "Editar Usuário" : "Novo Usuário"}
-            </Subtitle>
-            <Form>
-              <InputForm
-                placeholder="Nome"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <InputForm
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <InputForm
-                placeholder="Senha"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <Select value={role} onChange={(e) => setRole(e.target.value)}>
-                <Option value="admin">Admin</Option>
-                <Option value="manager">Gerente</Option>
-                <Option value="collaborator">Colaborador</Option>
-                <Option value="candidate">Candidato</Option>
-              </Select>
-              <CustomButton
-                type="button"
-                onClick={isEditing ? handleUpdateUser : handleCreateUser}
-              >
-                {isEditing ? "Atualizar" : "Salvar"}
-              </CustomButton>
-            </Form>
-          </ModalContent>
-        </ModalOverlay>
-      )} */}
     </Container>
   );
 }
