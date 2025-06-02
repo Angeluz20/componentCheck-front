@@ -14,7 +14,7 @@ export const Container = styled.div`
   display: flex;
   background-color: #fff;
   width: 70%;
-  height: 600px;
+  height: 800px;
   padding: 10px;
   flex-direction: column;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

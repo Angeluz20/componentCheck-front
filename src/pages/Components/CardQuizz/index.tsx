@@ -96,8 +96,13 @@ export default function CardQuizz({
         <img
           src={imageUrl}
           alt="Imagem da pergunta"
-          width={150}
-          style={{ marginBottom: 20 }}
+          style={{
+            maxWidth: 200,
+            maxHeight: 200,
+            objectFit: "contain",
+            marginBottom: 20,
+            borderRadius: 8,
+          }}
         />
       )}
 

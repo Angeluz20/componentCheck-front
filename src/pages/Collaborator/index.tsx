@@ -15,6 +15,7 @@ interface Answer {
 interface Question {
   id: number;
   question: string;
+  urlImg: string
   answers: Answer[];
   difficulty: "easy" | "medium" | "hard";
 }
@@ -121,7 +122,6 @@ export default function Collaborator() {
     setUserAnswers([]);
   };
 
-  console.log(userAnswers);
   return (
     <Container>
       <Header />
@@ -196,6 +196,7 @@ export default function Collaborator() {
                       currentIndex
                     ].answers.findIndex((a) => a.isCorrect)}
                     currentIndex={currentIndex}
+                    imageUrl={filteredQuestions[currentIndex].urlImg || ''}
                     totalQuestions={filteredQuestions.length}
                     onNext={handleNext}
                     onPrevious={handlePrevious}

@@ -15,6 +15,7 @@ interface Answer {
 interface Question {
   id: number;
   question: string;
+  urlImg: string;
   answers: Answer[];
   difficulty: "easy" | "medium" | "hard";
 }
@@ -181,7 +182,7 @@ export default function Candidate() {
             {filteredQuestions.length > 0 && (
               <div
                 key={filteredQuestions[currentIndex].id}
-                style={{ width:'60%' }}
+                style={{ width: "60%" }}
               >
                 {filteredQuestions[currentIndex].answers.length === 0 ? (
                   <div>Não há itens</div>
@@ -194,6 +195,7 @@ export default function Candidate() {
                     correctAnswerIndex={filteredQuestions[
                       currentIndex
                     ].answers.findIndex((a) => a.isCorrect)}
+                    imageUrl={filteredQuestions[currentIndex].urlImg}
                     currentIndex={currentIndex}
                     totalQuestions={filteredQuestions.length}
                     onNext={handleNext}
