@@ -13,6 +13,7 @@ import { Header } from "../../../Components/Header";
 import { toast } from "react-toastify";
 import { Trash2, ListCheck } from "lucide-react";
 import { useDebounce } from "use-debounce";
+import NotFound from "../../../Components/NotFound";
 
 export default function ResultUsers() {
   const [usersResult, setUsersResult] = useState<any[]>([]);
@@ -116,7 +117,7 @@ export default function ResultUsers() {
         />
       </div>
 
-      <Table style={{ width: "80%" }}>
+      {usersResult.length ? <Table style={{ width: "80%" }}>
         <thead>
           <TableRow>
             <TableHeader>Quiz ID</TableHeader>
@@ -155,7 +156,8 @@ export default function ResultUsers() {
             </TableRow>
           ))}
         </tbody>
-      </Table>
+      </Table> : <NotFound />}
+
     </Container>
   );
 }

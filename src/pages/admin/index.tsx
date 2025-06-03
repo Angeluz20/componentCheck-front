@@ -21,6 +21,7 @@ import { Edit, Edit2, Trash, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { Button } from "../../components/ui/button";
 import { useDebounce } from "use-debounce";
+import NotFound from "../Components/NotFound";
 
 interface ComponentData {
   id: string;
@@ -225,7 +226,7 @@ export default function ComponentManager() {
       </Subtitle>
 
       <CardGrid>
-        {components
+        {components.length ? components
           .filter((comp) => comp.userId === user?.id)
           .map((comp) => (
             <Card key={comp.id}>
@@ -237,7 +238,7 @@ export default function ComponentManager() {
               <strong>{comp.name}</strong>
               <p>{comp.description}</p>
             </Card>
-          ))}
+          )): <div><NotFound/></div>}
       </CardGrid>
     </Container>
   );

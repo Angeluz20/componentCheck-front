@@ -25,6 +25,8 @@ import {
 import { Header } from "../../../../pages/Components/Header";
 import { Edit2, MessageCircleMore, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
+import NotFound from "../../../Components/NotFound";
+
 
 interface ComponentData {
   id: string;
@@ -294,60 +296,60 @@ export default function CreateQuizModal() {
       >
         Criar Novo Quiz
       </CustomButton>
-
-      <CardGrid
-        style={{
-          width: "100%",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "flex-start",
-        }}
-      >
-        {quizzes.map((quiz) => (
-          <Card key={quiz.id}>
-            <div
-              style={{
-                width: "100%",
-                backgroundColor: "var(--green-100)",
-                padding: 5,
-                borderTopLeftRadius: 8,
-                borderTopRightRadius: 8,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <MessageCircleMore color="#fff" size={34} />
-              <Subtitle style={{ fontSize: 16 }}>{quiz.title}</Subtitle>
-              <ButtonGroup>
-                <IconButton onClick={() => handleEditQuiz(quiz)}>
-                  <Edit2 color="#fff" size={16} />
-                </IconButton>
-                <IconButton onClick={() => handleDeleteQuiz(quiz.id)}>
-                  <Trash2 color="#fff" size={16} />
-                </IconButton>
-              </ButtonGroup>
-            </div>
-            <div
-              style={{
-                width: "100%",
-                padding: 5,
-                marginTop: 20,
-                height: 100,
-              }}
-            >
-              <p>Dificuldade: {quiz.difficulty}</p>
+      {quizzes.length ?
+        <CardGrid
+          style={{
+            width: "100%",
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "flex-start",
+          }}
+        >
+          {quizzes.map((quiz) => (
+            <Card key={quiz.id}>
               <div
                 style={{
+                  width: "100%",
+                  backgroundColor: "var(--green-100)",
+                  padding: 5,
+                  borderTopLeftRadius: 8,
+                  borderTopRightRadius: 8,
                   display: "flex",
-                  justifyContent: "space-between",
-                  marginTop: 10,
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
-              ></div>
-            </div>
-          </Card>
-        ))}
-      </CardGrid>
+              >
+                <MessageCircleMore color="#fff" size={34} />
+                <Subtitle style={{ fontSize: 16 }}>{quiz.title}</Subtitle>
+                <ButtonGroup>
+                  <IconButton onClick={() => handleEditQuiz(quiz)}>
+                    <Edit2 color="#fff" size={16} />
+                  </IconButton>
+                  <IconButton onClick={() => handleDeleteQuiz(quiz.id)}>
+                    <Trash2 color="#fff" size={16} />
+                  </IconButton>
+                </ButtonGroup>
+              </div>
+              <div
+                style={{
+                  width: "100%",
+                  padding: 5,
+                  marginTop: 20,
+                  height: 100,
+                }}
+              >
+                <p>Dificuldade: {quiz.difficulty}</p>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: 10,
+                  }}
+                ></div>
+              </div>
+            </Card>
+          ))}
+        </CardGrid> : <NotFound />}
 
       {isModalOpen && (
         <ModalOverlay>

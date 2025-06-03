@@ -30,8 +30,8 @@ export function Header() {
           display: "flex",
           alignItems: "center",
           gap: "1.2rem",
-          flexWrap: "wrap",
           justifyContent: "flex-end",
+          justifyItems: 'center',
         }}
       >
         <Subtitle style={{ margin: 0, whiteSpace: "nowrap" }}>

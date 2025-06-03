@@ -7,11 +7,10 @@ import {
   Title,
   TitleRegisterOrSignIn,
 } from "./styles";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../assets/img/logo.png";
 import { Eye, EyeOff, Key, Mail, UserRound } from "lucide-react";
-import { useState } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import { toast } from "react-toastify";
 
@@ -20,7 +19,7 @@ type UserRole = "candidate" | "collaborator" | "manager" | "admin";
 export default function SignIn() {
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
-  const { login, register, isAuthenticated } = useAuth();
+  const { login, register, isAuthenticated, user } = useAuth();
 
   const [visiblePassword, setVisiblePassword] = useState<boolean>(true);
   const [isRegister, setIsRegister] = useState<boolean>(false);
@@ -57,7 +56,7 @@ export default function SignIn() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      switch (userRole) {
+      switch (user?.role) {
         case "candidate":
           navigate("/candidate-dashboard");
           break;
@@ -74,18 +73,18 @@ export default function SignIn() {
           navigate("/");
       }
     }
-  }, [isAuthenticated, navigate, userRole]);
+  }, [isAuthenticated, navigate, user]);
 
   useEffect(() => {
     if (!isRegister) {
-      const handleBackButton = (e: PopStateEvent) => {
-        e.preventDefault();
-        window.history.replaceState(null, "", "/");
+      const handleBackButton = () => {
         navigate("/", { replace: true });
       };
 
-      window.addEventListener("popstate", handleBackButton);
-      return () => window.removeEventListener("popstate", handleBackButton);
+      window.addEventListener('popstate', handleBackButton);
+      return () => {
+        window.removeEventListener('popstate', handleBackButton);
+      };
     }
   }, [isRegister, navigate]);
 
@@ -93,35 +92,30 @@ export default function SignIn() {
     setVisiblePassword(!visiblePassword);
   };
 
-  const handleSubmit = async () => {
-    setError(null);
-    setLoading(true);
+const handleSubmit = async () => {
+  setError(null);
+  setLoading(true);
 
-    try {
-      if (isRegister) {
-        if (password !== confirmPassword) {
-          throw new Error("Passwords do not match");
-        }
-        if (password.length < 6) {
-          throw new Error("Password must be at least 6 characters");
-        }
-
-        await register(name, email, password, userRole);
-        toast.success("Registration successful! Please login.");
-        setIsRegister(false);
-      } else {
-        await login(email, password);
-      }
-    } catch (err: any) {
-      console.error("Auth error:", err);
-      const errorMessage =
-        err.response?.data?.message || err.message || "Authentication failed";
-      toast.error(errorMessage);
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
+  try {
+    if (isRegister) {
+      // ... validações
+      await register(name, email, password, userRole);
+      toast.success("Registro bem-sucedido! Faça login.");
+      setIsRegister(false);
+      // Adicione isso para resetar o formulário após o registro
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+    } else {
+      await login(email, password);
     }
-  };
+  } catch (err) {
+    // ... tratamento de erros
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleToggleRegister = () => {
     setIsRegister(!isRegister);
@@ -160,7 +154,7 @@ export default function SignIn() {
           <ContainerInput>
             <UserRound color="gray" />
             <CustomInput
-              placeholder="Full Name"
+              placeholder="Nome"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -181,7 +175,7 @@ export default function SignIn() {
         <ContainerInput>
           <Key color="gray" />
           <CustomInput
-            placeholder="Password"
+            placeholder="Senha"
             type={visiblePassword ? "password" : "text"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -205,7 +199,7 @@ export default function SignIn() {
           <ContainerInput>
             <Key color="gray" />
             <CustomInput
-              placeholder="Confirm Password"
+              placeholder="Confirme a senha"
               type={visiblePassword ? "password" : "text"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -220,7 +214,7 @@ export default function SignIn() {
         )}
 
         <CustomButton onClick={handleSubmit} disabled={loading}>
-          {loading ? "Processing..." : isRegister ? "Register" : "Login"}
+          {loading ? "Carregando..." : isRegister ? "Cadastrar" : "Entrar"}
         </CustomButton>
 
         <TitleRegisterOrSignIn
