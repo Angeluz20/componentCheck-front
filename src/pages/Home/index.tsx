@@ -1,4 +1,5 @@
 import {
+  CardContainer,
   Container,
   ContainerInput,
   CustomButton,
@@ -37,13 +38,7 @@ export default function Home() {
         <Subtitle style={{ color: "gray", marginBottom: 60 }}>
           Selecione abaixo o perfil para iniciar sua jornada na plataforma
         </Subtitle>
-        <div
-          style={{
-            flexDirection: "row",
-            width: "80%",
-            display: "flex",
-            justifyContent: "space-around",
-          }}
+        <CardContainer
         >
           {dataCards.map((item) => (
             <CardSectionUser
@@ -56,7 +51,7 @@ export default function Home() {
               imgIcon={item.imgIcon}
             />
           ))}
-        </div>
+        </CardContainer>
       </Section>
     </Container>
   );

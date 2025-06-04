@@ -16,8 +16,27 @@ export const Container = styled.div`
   width: 100vw;
   height: 100vh;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+  }
 `;
 
+export const CardContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  justify-content: space-around;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    flex-direction:column;
+    justify-content: space-between;
+  }
+`;
 export const ContainerInput = styled.div`
   display: flex;
   flex-direction: row;
@@ -40,6 +59,12 @@ export const Section = styled.section`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    flex-direction:column;
+    justify-content: space-between;
+  }
 `;
 
 export const CustomInput = styled(Input)`

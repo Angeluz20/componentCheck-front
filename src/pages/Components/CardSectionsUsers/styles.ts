@@ -20,7 +20,15 @@ export const Container = styled.div`
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+ 
 
+  @media (max-width: 768px) {
+    margin-top: 70px;
+    width:100px;
+    height:100px;
+    align-items:center;
+    flex: 0 0 38%; // Ajusta o tamanho para cada card ocupar 48% da largura em telas pequenas
+  }
   &:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
