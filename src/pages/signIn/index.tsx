@@ -75,18 +75,18 @@ export default function SignIn() {
     }
   }, [isAuthenticated, navigate, user]);
 
-  useEffect(() => {
-    if (!isRegister) {
-      const handleBackButton = () => {
-        navigate("/", { replace: true });
-      };
+  // useEffect(() => {
+  //   if (!isRegister) {
+  //     const handleBackButton = () => {
+  //       navigate("/", { replace: true });
+  //     };
 
-      window.addEventListener('popstate', handleBackButton);
-      return () => {
-        window.removeEventListener('popstate', handleBackButton);
-      };
-    }
-  }, [isRegister, navigate]);
+  //     window.addEventListener('popstate', handleBackButton);
+  //     return () => {
+  //       window.removeEventListener('popstate', handleBackButton);
+  //     };
+  //   }
+  // }, [isRegister, navigate]);
 
   const handleVisiblePassword = () => {
     setVisiblePassword(!visiblePassword);
@@ -98,11 +98,9 @@ const handleSubmit = async () => {
 
   try {
     if (isRegister) {
-      // ... validações
       await register(name, email, password, userRole);
       toast.success("Registro bem-sucedido! Faça login.");
       setIsRegister(false);
-      // Adicione isso para resetar o formulário após o registro
       setName("");
       setEmail("");
       setPassword("");
@@ -111,7 +109,6 @@ const handleSubmit = async () => {
       await login(email, password);
     }
   } catch (err) {
-    // ... tratamento de erros
   } finally {
     setLoading(false);
   }
