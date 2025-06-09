@@ -1,16 +1,10 @@
-FROM node:18-alpine AS build
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-RUN npm run build
-
 FROM nginx:alpine
 
-COPY --from=build /app/build /usr/share/nginx/html
+# Remove o conteúdo padrão do Nginx
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copia o build da sua máquina para dentro do container
+COPY build/ /usr/share/nginx/html
 
 EXPOSE 80
 
